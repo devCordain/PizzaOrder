@@ -1,4 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
+using PizzaOrder.Controllers;
+using System;
+using System.IO;
 
 namespace PizzaOrder.Tests {
     [TestClass]

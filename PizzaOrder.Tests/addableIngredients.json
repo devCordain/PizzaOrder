@@ -1,0 +1,32 @@
+{
+  "Skinka": {
+    "Price": 10
+  },
+  "Ananas": {
+    "Price": 10
+  },
+  "Champinjoner": {
+    "Price": 10
+  },
+  "Lök": {
+    "Price": 10
+  },
+  "Kebabsås": {
+    "Price": 10
+  },
+  "Räkor": {
+    "Price": 15
+  },
+  "Musslor": {
+    "Price": 15
+  },
+  "Kronärtskocka": {
+    "Price": 15
+  },
+  "Kebab": {
+    "Price": 20
+  },
+  "Koriander": {
+    "Price": 20
+  }
+}
