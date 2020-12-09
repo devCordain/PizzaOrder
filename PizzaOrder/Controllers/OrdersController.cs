@@ -52,7 +52,6 @@ namespace PizzaOrder.Controllers {
         public void AddItemToOrder(int orderId, string itemName) {
             var order = Get(orderId);
             var item = orderableController.GetOrderable(itemName);
-            if (item == null) throw new ArgumentNullException("No such item");
             order.Items.Add(item);
         }
 
