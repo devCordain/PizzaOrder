@@ -22,7 +22,11 @@ namespace PizzaOrder {
 
         public IOrderable Create(string type)
         {
-            return createOrderableInitializer.Where(x => x.Key == type).FirstOrDefault().Value.Invoke();
+            var initializer = createOrderableInitializer.Where(x => x.Key == type).FirstOrDefault();
+            if (initializer.Value == null) {
+                throw new ArgumentNullException("No such item type");
+            }
+            return initializer.Value.Invoke();
         }
 
         public IEnumerable<IOrderable> CreateAll() {

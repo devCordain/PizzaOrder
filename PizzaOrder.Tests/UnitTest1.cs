@@ -85,6 +85,14 @@ namespace PizzaOrder.Tests {
         }
 
         [TestMethod]
+        public void Remove_from_Order_should_throw_expected_exception_if_item_does_not_exist() {
+            var inputNames = new List<string>() { "Coca cola" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            Assert.ThrowsException<ArgumentNullException>(() => controller.RemoveItemFromOrder(1, "Fanta"));
+        }
+
+        [TestMethod]
         public void Add_to_Order_should_succeed() {
             var inputNames = new List<string>() { "Fanta" };
             var controller = new OrdersController();
@@ -94,6 +102,14 @@ namespace PizzaOrder.Tests {
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(2, actual.Items.Count);
             Assert.AreEqual(40, actual.TotalPrice);
+        }
+
+        [TestMethod]
+        public void Add_to_Order_should_throw_expected_exception_if_item_does_not_exist() {
+            var inputNames = new List<string>() { "Coca cola" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            Assert.ThrowsException<ArgumentNullException>(() => controller.AddItemToOrder(1, "Rymdpizza"));
         }
 
         [TestMethod]
@@ -110,6 +126,15 @@ namespace PizzaOrder.Tests {
         }
 
         [TestMethod]
+        public void Add_Addables_to_pizza_should_throw_expected_exception_if_addable_does_not_exist() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            var inputAddable = "Vacuum";
+            Assert.ThrowsException<ArgumentNullException>(() => controller.AddAddable(1, 2, inputAddable));
+        }
+
+        [TestMethod]
         public void Remove_Addables_to_pizza_should_succeed() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
             var controller = new OrdersController();
@@ -122,6 +147,15 @@ namespace PizzaOrder.Tests {
             controller.RemoveAddable(1, 2, inputAddable);
             Assert.AreEqual(0, (actual.Items[2] as Pizza).Addables.Count);
             Assert.AreEqual(220, actual.TotalPrice);
+        }
+
+        [TestMethod]
+        public void Remove_Addables_to_pizza_should_throw_expected_exception_if_addable_does_not_exist() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            var inputAddable = "Vacuum";
+            Assert.ThrowsException<ArgumentNullException>(() => controller.RemoveAddable(1, 2, inputAddable));
         }
 
         [TestMethod]
@@ -219,6 +253,6 @@ namespace PizzaOrder.Tests {
  * X - Lista samtliga pågående Ordrar -> Skriver ut aktuell lista (Hämtar från Decorators pågående lista)
  * X - Avbryta Order -> 
  * X - Färdigställa Order ->
- * X Testa exceptions
+ * X - Testa exceptions
  * Pizza.With(Cheese).With(Ham)With(Tomato).Build();
  */
