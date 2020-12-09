@@ -5,5 +5,7 @@ using System.Threading.Tasks;
 
 namespace PizzaOrder {
     public interface IOrderable {
+        public string Name { get;}
+        public int Price { get;}
     }
 }
