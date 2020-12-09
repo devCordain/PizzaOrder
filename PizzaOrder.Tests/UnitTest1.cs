@@ -61,7 +61,7 @@ namespace PizzaOrder.Tests {
             var controller = new OrdersController();
             controller.Create(inputNames);
             controller.RemoveItemFromOrder(1, "Fanta");
-            var actual = controller.GetOrder(1);
+            var actual = controller.Get(1);
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(0, actual.Items.Count);
             Assert.AreEqual(0, actual.TotalPrice);
@@ -73,7 +73,7 @@ namespace PizzaOrder.Tests {
             var controller = new OrdersController();
             controller.Create(inputNames);
             controller.AddItemToOrder(1, "Coca cola");
-            var actual = controller.GetOrder(1);
+            var actual = controller.Get(1);
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(2, actual.Items.Count);
             Assert.AreEqual(40, actual.TotalPrice);
@@ -85,11 +85,80 @@ namespace PizzaOrder.Tests {
             var controller = new OrdersController();
             controller.Create(inputNames);
             var inputAddable = "Kebab";
-            var actual = controller.GetOrder(1);
+            var actual = controller.Get(1);
             Assert.AreEqual(0, (actual.Items[2] as Pizza).Addables.Count);
             controller.AddAddable(1, 2, inputAddable);
             Assert.AreEqual(1, (actual.Items[2] as Pizza).Addables.Count);
             Assert.AreEqual(240, actual.TotalPrice);
+        }
+
+        [TestMethod]
+        public void Remove_Addables_to_pizza_should_succeed() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            var inputAddable = "Kebab";
+            var actual = controller.Get(1);
+            Assert.AreEqual(0, (actual.Items[2] as Pizza).Addables.Count);
+            controller.AddAddable(1, 2, inputAddable);
+            Assert.AreEqual(1, (actual.Items[2] as Pizza).Addables.Count);
+            controller.RemoveAddable(1, 2, inputAddable);
+            Assert.AreEqual(0, (actual.Items[2] as Pizza).Addables.Count);
+            Assert.AreEqual(220, actual.TotalPrice);
+        }
+
+        [TestMethod]
+        public void Confirm_order_should_return_list_of_ingrediens_and_products_and_price() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            var inputAddable = "Kebab";
+            controller.AddAddable(1, 2, inputAddable);
+            var actual = controller.Confirm(1);
+            Assert.AreEqual(Order.OrderStatus.Confirmed, actual.Status);
+        }
+        [TestMethod]
+        public void Get_ongoing_Should_return_all_active_orders() {
+            var inputData = new List<List<string>>() {
+                new List<string>() { "Margarita", "Fanta", "Margarita" },
+                new List<string>() { "Kebabpizza", "Sprite", "Kebabpizza" },
+                new List<string>() { "Hawaii", "Coca cola", "Kebabpizza" },
+                new List<string>() { "Margarita", "Fanta", "Kebabpizza" },
+                new List<string>() { "Hawaii", "Sprite", "Kebabpizza" },
+                new List<string>() { "Kebabpizza", "Fanta", "Kebabpizza" },
+                new List<string>() { "Hawaii", "Sprite", "Kebabpizza" },
+                new List<string>() { "Margarita", "Fanta", "Kebabpizza" }
+            };
+            var ordersController = new OrdersController();
+            foreach (var inputNames in inputData) {
+                ordersController.Create(inputNames);
+            }
+            for (int i = 1; i < inputData.Count; i+=2) {
+                ordersController.Confirm(i);
+            }
+            var actual = ordersController.GetActive();
+            Assert.AreEqual(4, actual.Count());
+        }
+
+        [TestMethod]
+        public void Cancel_order_should_succeed() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            controller.Cancel(1);
+            var actual = controller.Get(1);
+            Assert.AreEqual(Order.OrderStatus.Cancelled, actual.Status);
+        }
+        
+        [TestMethod]
+        public void Complete_should_succeed() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            controller.Confirm(1);
+            controller.Complete(1);
+            var actual = controller.Get(1);
+            Assert.AreEqual(Order.OrderStatus.Completed, actual.Status);
         }
     }
 }
@@ -99,11 +168,11 @@ namespace PizzaOrder.Tests {
  * X - Ta bort på Order -> Pizza/Läsk (IOrderable) (Objekt tas bort på Order)
  * X - Lägga till på Order -> Pizza/Läsk (IOrderable) (Objekt läggs till på Order) (PizzaBuilder -> (Factory för Pizza(IOrderable)).With(Topping(IAddable))
  * X - Lägga till på Pizza -> Tillbehör (IAddable) (Objekt instansieras på Pizza) (Extra ingredienser)
- * Ta bort på Pizza -> Tillbehör (IAddable) (Objekt tas bort på Pizza) 
- * Bekräfta Order -> Returnerar lista på ingredienser, produkter och pris (Decorator -> logga till pågående ordrar med kö) (ska returnera lista med ingredienser, alla produkter och totalt pris.)
- * Lista samtliga pågående Ordrar -> Skriver ut aktuell lista (Hämtar från Decorators pågående lista)
- * Avbryta Order -> 
- * Färdigställa Order ->
+ * X - Ta bort på Pizza -> Tillbehör (IAddable) (Objekt tas bort på Pizza) 
+ * X - Bekräfta Order -> Returnerar lista på ingredienser, produkter och pris.
+ * X - Lista samtliga pågående Ordrar -> Skriver ut aktuell lista (Hämtar från Decorators pågående lista)
+ * X - Avbryta Order -> 
+ * X - Färdigställa Order ->
  *
  * Pizza.With(Cheese).With(Ham)With(Tomato).Build();
  */

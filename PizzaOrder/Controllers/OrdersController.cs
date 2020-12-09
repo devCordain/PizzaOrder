@@ -37,20 +37,20 @@ namespace PizzaOrder.Controllers {
 
         [HttpPost]
         public void RemoveItemFromOrder(int orderId, string itemName) {
-            var order = orders.Where(x => x.Id == orderId).FirstOrDefault();
+            var order = Get(orderId);
             var item = order.Items.Where(x => x.Name == itemName).FirstOrDefault();
             if (item == null) throw new ArgumentNullException();
             order.Items.Remove(item);
         }
 
         [HttpGet]
-        public Order GetOrder(int orderId) {
+        public Order Get(int orderId) {
             return orders.Where(x => x.Id == orderId).FirstOrDefault();
         }
 
         [HttpPut]
         public void AddItemToOrder(int orderId, string itemName) {
-            var order = orders.Where(x => x.Id == orderId).FirstOrDefault();
+            var order = Get(orderId);
             var item = orderableController.GetOrderable(itemName);
             if (item == null) throw new ArgumentNullException();
             order.Items.Add(item);
@@ -58,10 +58,56 @@ namespace PizzaOrder.Controllers {
 
         [HttpPut]
         public void AddAddable(int orderId, int itemIndex, string addableName) {
-            var order = orders.Where(x => x.Id == orderId).FirstOrDefault();
-            var addable = addables.Where(x => x.Name == addableName).FirstOrDefault();
+            var order = Get(orderId);
+            IAddable addable = GetAddable(addableName);
             if (addable == null) throw new ArgumentNullException();
             (order.Items[itemIndex] as Pizza).Addables.Add(addable);
+        }
+
+        private IAddable GetAddable(string addableName) {
+            return addables.Where(x => x.Name == addableName).FirstOrDefault();
+        }
+
+        [HttpDelete]
+        public void RemoveAddable(int orderId, int itemIndex, string addableName) {
+            var order = Get(orderId);
+            var addable = GetAddable(addableName);
+            if (addable == null) throw new ArgumentNullException();
+            (order.Items[itemIndex] as Pizza).Addables.Remove(addable);
+        }
+        [HttpPut]
+        public Order Confirm(int orderId) {
+            var order = Get(orderId);
+            if (order.Status == Order.OrderStatus.Created)
+                order.Status = Order.OrderStatus.Confirmed;
+            else {
+                throw new InvalidOperationException("Can only confirm orders with OrderStatus 'Created'");
+            }
+            return order;
+        }
+
+        public IEnumerable<Order> GetActive() {
+            return orders.Where(x => x.Status == Order.OrderStatus.Confirmed).ToList();
+        }
+
+        public void Cancel(int orderId) {
+            var order = Get(orderId);
+            if (order.Status == Order.OrderStatus.Confirmed || order.Status == Order.OrderStatus.Created) {
+                order.Status = Order.OrderStatus.Cancelled;
+            }
+            else {
+                throw new InvalidOperationException("Can only cancel orders with OrderStatus 'Created' or 'Confirmed'");
+            }
+        }
+
+        public void Complete(int orderId) {
+            var order = Get(orderId);
+            if (order.Status == Order.OrderStatus.Confirmed) {
+                order.Status = Order.OrderStatus.Completed;
+            }
+            else {
+                throw new InvalidOperationException("Can only confirm orders with OrderStatus 'Confirmed'");
+            }
         }
     }
 }
