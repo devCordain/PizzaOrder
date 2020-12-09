@@ -13,13 +13,5 @@ namespace PizzaOrder {
             Id = id;
             Items = items;
         }
-
-        public void Add(IOrderable item) {
-            Items.Add(item);
-        }
-
-        public void Remove(IOrderable item) {
-            Items.Remove(item);
-        }
     }
 }

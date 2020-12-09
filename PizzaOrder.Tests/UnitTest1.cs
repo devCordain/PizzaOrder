@@ -27,6 +27,23 @@ namespace PizzaOrder.Tests {
             Assert.AreEqual(expected.Price, controller.GetOrderable(input).Price);
         }
 
+        [DataTestMethod]
+        [DataRow("Margarita")]
+        [DataRow("Hawaii")]
+        [DataRow("Kebabpizza")]
+        [DataRow("Quatro Stagioni")]
+        [TestMethod]
+        public void GetOrderable_Should_return_a_correct_list_of_toppings(string input) {
+            var mockData = new MockData();
+            var expected = (mockData.Orderables.Where(x => x.Key == input).FirstOrDefault().Value as Pizza).Toppings;
+            var controller = new OrderableController();
+            var actual = (controller.GetOrderable(input) as Pizza).Toppings;
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length - 1; i++) {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
         [TestMethod]
         public void GetOrderables_Should_return_a_correct_name_and_price_for_all_orderables() {
             var mockData = new MockData();
@@ -117,6 +134,16 @@ namespace PizzaOrder.Tests {
             var actual = controller.Confirm(1);
             Assert.AreEqual(Order.OrderStatus.Confirmed, actual.Status);
         }
+
+        [TestMethod]
+        public void Confirm_order_should_throw_expected_exception_if_status_is_wrong() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            controller.Cancel(1);
+            Assert.ThrowsException<InvalidOperationException>(() => controller.Confirm(1));
+        }
+
         [TestMethod]
         public void Get_ongoing_Should_return_all_active_orders() {
             var inputData = new List<List<string>>() {
@@ -149,7 +176,17 @@ namespace PizzaOrder.Tests {
             var actual = controller.Get(1);
             Assert.AreEqual(Order.OrderStatus.Cancelled, actual.Status);
         }
-        
+
+        [TestMethod]
+        public void Cancel_order_should_throw_expected_exception_if_status_is_wrong() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            controller.Confirm(1);
+            controller.Complete(1);
+            Assert.ThrowsException<InvalidOperationException>(() => controller.Cancel(1));
+        }
+
         [TestMethod]
         public void Complete_should_succeed() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
@@ -160,6 +197,15 @@ namespace PizzaOrder.Tests {
             var actual = controller.Get(1);
             Assert.AreEqual(Order.OrderStatus.Completed, actual.Status);
         }
+        
+        [TestMethod]
+        public void Complete_order_should_throw_expected_exception_if_status_is_wrong() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController();
+            controller.Create(inputNames);
+            Assert.ThrowsException<InvalidOperationException>(() => controller.Complete(1));
+        }
+
     }
 }
 /* 
@@ -173,6 +219,6 @@ namespace PizzaOrder.Tests {
  * X - Lista samtliga pågående Ordrar -> Skriver ut aktuell lista (Hämtar från Decorators pågående lista)
  * X - Avbryta Order -> 
  * X - Färdigställa Order ->
- *
+ * X Testa exceptions
  * Pizza.With(Cheese).With(Ham)With(Tomato).Build();
  */
