@@ -11,7 +11,7 @@ namespace PizzaOrder.Controllers {
     [Produces("application/json")]
     public class OrdersController : Controller {
         private OrderableController orderableController = new OrderableController();
-        private List<Order> orders = new List<Order>();
+        private List<Order> orders;
         private int orderIndex = 1;
         private List<IAddable> addables = new List<IAddable>() {
             new Topping("Skinka", 10),
@@ -25,6 +25,10 @@ namespace PizzaOrder.Controllers {
             new Topping("Kebab", 20),
             new Topping("Koriander", 20)
         };
+
+        public OrdersController(Storage storage) {
+            orders = storage.data;
+        }
 
         [HttpPost]
         public Order Create(IEnumerable<string> itemNames) {
