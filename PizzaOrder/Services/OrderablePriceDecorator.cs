@@ -4,17 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace PizzaOrder {
-    public class OrderablePriceDecorator {
-        public OrderablePriceDecorator() {
-
-        }
-
-        public double GetTotalOrderPrice(IEnumerable<IOrderable> orderables) {
-            if (orderables.Count() == 0) {
+    public class OrderablePriceDecorator : OrderableVisitor {
+        public override double GetPrice(IEnumerable<IOrderable> items) {
+            if (items.Count() == 0) {
                 return 0;
             }
-            var pizzaPrice = new PizzaVisitor().GetPrice(orderables);
-            var drinksPrice = new DrinkVisitor().GetPrice(orderables);
+            var pizzaPrice = new PizzaVisitor().GetPrice(items);
+            var drinksPrice = new DrinkVisitor().GetPrice(items);
             return pizzaPrice + drinksPrice;
         }
     }

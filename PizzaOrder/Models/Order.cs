@@ -6,7 +6,7 @@ namespace PizzaOrder {
         public enum OrderStatus { Created, Cancelled, Confirmed, Completed }
         public int Id { get; }
         public OrderStatus Status { get; set; }
-        public double TotalPrice { get { return new OrderablePriceDecorator().GetTotalOrderPrice(Items); } }
+        public double TotalPrice { get { return new OrderablePriceDecorator().GetPrice(Items); } }
         public List<IOrderable> Items { get;}
 
         public Order(int id, List<IOrderable> items) {

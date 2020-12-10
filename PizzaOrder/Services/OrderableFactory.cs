@@ -16,10 +16,6 @@ namespace PizzaOrder {
             { "Sprite", () => new Drink("Sprite", 25) }
         };
 
-        public OrderableFactory() {
-
-        }
-
         public IOrderable Create(string type)
         {
             var initializer = createOrderableInitializer.Where(x => x.Key == type).FirstOrDefault();

@@ -273,13 +273,13 @@ namespace PizzaOrder.Tests {
  * X - Lista alla beställningsbara produker -> (IOrderable) 
  * X - Skapa Order -> Pizza/Läsk (IOrderable) (Objekt instansieras på Order) Basklass (Factory för Pizza) (Factory för Läsk)
  * X - Ta bort på Order -> Pizza/Läsk (IOrderable) (Objekt tas bort på Order)
- * X - Lägga till på Order -> Pizza/Läsk (IOrderable) (Objekt läggs till på Order) (PizzaBuilder -> (Factory för Pizza(IOrderable)).With(Topping(IAddable))
+ * X - Lägga till på Order -> Pizza/Läsk (IOrderable) (Objekt läggs till på Order) (OrderableFactory -> (För att skapa Pizzor och Drycker))
  * X - Lägga till på Pizza -> Tillbehör (IAddable) (Objekt instansieras på Pizza) (Extra ingredienser)
  * X - Ta bort på Pizza -> Tillbehör (IAddable) (Objekt tas bort på Pizza) 
- * X - Bekräfta Order -> Returnerar lista på ingredienser, produkter och pris.
- * X - Lista samtliga pågående Ordrar -> Skriver ut aktuell lista (Hämtar från Decorators pågående lista)
+ * X - Bekräfta Order -> Returnerar lista på ingredienser, produkter och pris. (Visitor för att flytta summeringslogik från IOrderables) 
+ * (Decorator för att kunna lägga till funktionalitet på orders att summera Totalpris för alla orderables, samt möjlighet till utökning av funktionalitet för integrationer) 
+ * X - Lista samtliga pågående Ordrar -> Skriver ut aktuell lista 
  * X - Avbryta Order -> 
  * X - Färdigställa Order ->
  * X - Testa exceptions
- * Pizza.With(Cheese).With(Ham)With(Tomato).Build();
  */
