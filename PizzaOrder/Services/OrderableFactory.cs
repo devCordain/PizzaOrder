@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace PizzaOrder {
-    public class IOrderableFactory {
+    public class OrderableFactory {
 
         private Dictionary<string, Func<IOrderable>> createOrderableInitializer = new Dictionary<string, Func<IOrderable>> {
             { "Margarita", () => new Pizza("Margarita", 85, new string[] { "Ost", "Tomatsås" }) },
@@ -16,7 +16,7 @@ namespace PizzaOrder {
             { "Sprite", () => new Drink("Sprite", 25) }
         };
 
-        public IOrderableFactory() {
+        public OrderableFactory() {
 
         }
 

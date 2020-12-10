@@ -35,7 +35,7 @@ namespace PizzaOrder.Controllers {
             return order;
         }
 
-        [HttpPost]
+
         public void RemoveItemFromOrder(int orderId, string itemName) {
             var order = Get(orderId);
             var item = order.Items.Where(x => x.Name == itemName).FirstOrDefault();
@@ -48,14 +48,12 @@ namespace PizzaOrder.Controllers {
             return orders.Where(x => x.Id == orderId).FirstOrDefault();
         }
 
-        [HttpPut]
         public void AddItemToOrder(int orderId, string itemName) {
             var order = Get(orderId);
             var item = orderableController.GetOrderable(itemName);
             order.Items.Add(item);
         }
 
-        [HttpPut]
         public void AddAddable(int orderId, int itemIndex, string addableName) {
             var order = Get(orderId);
             IAddable addable = GetAddable(addableName);
@@ -67,14 +65,13 @@ namespace PizzaOrder.Controllers {
             return addables.Where(x => x.Name == addableName).FirstOrDefault();
         }
 
-        [HttpDelete]
         public void RemoveAddable(int orderId, int itemIndex, string addableName) {
             var order = Get(orderId);
             var addable = GetAddable(addableName);
             if (addable == null) throw new ArgumentNullException("No such addable");
             (order.Items[itemIndex] as Pizza).Addables.Remove(addable);
         }
-        [HttpPut]
+
         public Order Confirm(int orderId) {
             var order = Get(orderId);
             if (order.Status == Order.OrderStatus.Created)

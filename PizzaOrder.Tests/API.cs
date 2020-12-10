@@ -1,15 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PizzaOrder.Controllers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace PizzaOrder.Tests {
     [TestClass]
-    public class UnitTest1 {
+    public class API {
         [DataTestMethod]
         [DataRow("Margarita")]
         [DataRow("Hawaii")]

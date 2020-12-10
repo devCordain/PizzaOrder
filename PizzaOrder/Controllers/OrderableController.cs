@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PizzaOrder.Controllers {
     public class OrderableController : Controller {
-        private IOrderableFactory orderableFactory = new IOrderableFactory();
+        private OrderableFactory orderableFactory = new OrderableFactory();
 
         [HttpGet]
         public IOrderable GetOrderable(string type) {
