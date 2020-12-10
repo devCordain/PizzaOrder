@@ -55,7 +55,7 @@ namespace PizzaOrder.Tests {
         }
 
         [TestMethod]
-        public void Create_Order_should_return_correct_values() {
+        public void Create_Order_should_return_correct_values_with_both_pizza_and_drink() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
             var controller = new OrdersController();
             var actual = controller.Create(inputNames);
@@ -67,6 +67,36 @@ namespace PizzaOrder.Tests {
                 Assert.AreEqual(expectedItem.Value.Price, item.Price);
             }
             Assert.AreEqual(220, actual.TotalPrice);
+        }
+
+        [TestMethod]
+        public void Create_Order_should_return_correct_values_if_no_drinks() {
+            var inputNames = new List<string>() { "Hawaii","Kebabpizza" };
+            var controller = new OrdersController();
+            var actual = controller.Create(inputNames);
+            Assert.AreEqual(1, actual.Id);
+            Assert.AreEqual(Order.OrderStatus.Created, actual.Status);
+            foreach (var item in actual.Items) {
+                var expectedItem = new MockData().Orderables.Where(x => x.Key == item.Name).FirstOrDefault();
+                Assert.AreEqual(expectedItem.Value.Name, item.Name);
+                Assert.AreEqual(expectedItem.Value.Price, item.Price);
+            }
+            Assert.AreEqual(200, actual.TotalPrice);
+        }
+
+        [TestMethod]
+        public void Create_Order_should_return_correct_values_if_no_pizzas() {
+            var inputNames = new List<string>() { "Fanta" };
+            var controller = new OrdersController();
+            var actual = controller.Create(inputNames);
+            Assert.AreEqual(1, actual.Id);
+            Assert.AreEqual(Order.OrderStatus.Created, actual.Status);
+            foreach (var item in actual.Items) {
+                var expectedItem = new MockData().Orderables.Where(x => x.Key == item.Name).FirstOrDefault();
+                Assert.AreEqual(expectedItem.Value.Name, item.Name);
+                Assert.AreEqual(expectedItem.Value.Price, item.Price);
+            }
+            Assert.AreEqual(20, actual.TotalPrice);
         }
 
         [TestMethod]
