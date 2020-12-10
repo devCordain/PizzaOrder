@@ -8,7 +8,7 @@ namespace PizzaOrder {
         public override double GetPrice(IEnumerable<IOrderable> items) {
             double totalPrice = 0;
             var drinks = items.Where(x => x is Drink);
-            if (drinks == null) {
+            if (!drinks.Any()) {
                 return totalPrice;
             }
             foreach (Drink drink in drinks) {
