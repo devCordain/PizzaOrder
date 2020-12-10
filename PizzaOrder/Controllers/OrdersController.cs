@@ -35,7 +35,7 @@ namespace PizzaOrder.Controllers {
             return order;
         }
 
-
+        [HttpDelete]
         public void RemoveItemFromOrder(int orderId, string itemName) {
             var order = Get(orderId);
             var item = order.Items.Where(x => x.Name == itemName).FirstOrDefault();
@@ -48,12 +48,14 @@ namespace PizzaOrder.Controllers {
             return orders.Where(x => x.Id == orderId).FirstOrDefault();
         }
 
+        [HttpPut("/AddItemToOrder")]
         public void AddItemToOrder(int orderId, string itemName) {
             var order = Get(orderId);
             var item = orderableController.GetOrderable(itemName);
             order.Items.Add(item);
         }
 
+        [HttpPut("/AddAddable")]
         public void AddAddable(int orderId, int itemIndex, string addableName) {
             var order = Get(orderId);
             IAddable addable = GetAddable(addableName);
@@ -61,10 +63,12 @@ namespace PizzaOrder.Controllers {
             (order.Items[itemIndex] as Pizza).Addables.Add(addable);
         }
 
+        [HttpGet("/GetAddable")]
         private IAddable GetAddable(string addableName) {
             return addables.Where(x => x.Name == addableName).FirstOrDefault();
         }
 
+        [HttpDelete("/RemoveAddable")]
         public void RemoveAddable(int orderId, int itemIndex, string addableName) {
             var order = Get(orderId);
             var addable = GetAddable(addableName);
@@ -72,6 +76,7 @@ namespace PizzaOrder.Controllers {
             (order.Items[itemIndex] as Pizza).Addables.Remove(addable);
         }
 
+        [HttpPut("/Confirm")]
         public Order Confirm(int orderId) {
             var order = Get(orderId);
             if (order.Status == Order.OrderStatus.Created)
@@ -82,10 +87,12 @@ namespace PizzaOrder.Controllers {
             return order;
         }
 
+        [HttpGet("/GetActive")]
         public IEnumerable<Order> GetActive() {
             return orders.Where(x => x.Status == Order.OrderStatus.Confirmed).ToList();
         }
 
+        [HttpPut("/Cancel")]
         public void Cancel(int orderId) {
             var order = Get(orderId);
             if (order.Status == Order.OrderStatus.Confirmed || order.Status == Order.OrderStatus.Created) {
@@ -96,6 +103,7 @@ namespace PizzaOrder.Controllers {
             }
         }
 
+        [HttpPut("/Complete")]
         public void Complete(int orderId) {
             var order = Get(orderId);
             if (order.Status == Order.OrderStatus.Confirmed) {
